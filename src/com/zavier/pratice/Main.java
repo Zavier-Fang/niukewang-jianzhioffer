@@ -190,14 +190,14 @@ class Solution8 {
 // 题目：变态跳台阶
 class Solution9 {
     public int JumpFloorII(int target) {
-        if(target==0) return 0;
-        if(target==1) return 1;
+        if (target == 0) return 0;
+        if (target == 1) return 1;
 
-        int[] f = new int[target+1];
+        int[] f = new int[target + 1];
         f[1] = 1;
-        for(int i=2;i<=target;i++){
+        for (int i = 2; i <= target; i++) {
             f[i] = 1;
-            for (int j=1;j<i;j++){
+            for (int j = 1; j < i; j++) {
                 f[i] += f[j];
             }
         }
@@ -216,13 +216,13 @@ class Solution9 {
  */
 class Solution9_1 {
     public int JumpFloorII(int target) {
-        if(target==0) return 0;
-        if(target==1) return 1;
+        if (target == 0) return 0;
+        if (target == 1) return 1;
 
-        int[] f = new int[target+1];
+        int[] f = new int[target + 1];
         f[1] = 1;
-        for(int i=2;i<=target;i++){
-            f[i] = 2*f[i-1];
+        for (int i = 2; i <= target; i++) {
+            f[i] = 2 * f[i - 1];
         }
         return f[target];
     }
@@ -231,22 +231,86 @@ class Solution9_1 {
 // 题目：矩形覆盖
 class Solution10 {
     public int RectCover(int target) {
-        if (target==0) return 0;
-        if (target==1) return 1;
-        if (target==2) return 2;
+        if (target == 0) return 0;
+        if (target == 1) return 1;
+        if (target == 2) return 2;
 
-        int[] f = new int[target+1];
+        int[] f = new int[target + 1];
         f[1] = 1;
         f[2] = 2;
-        for (int i=3;i<=target;i++) {
-            f[i] = f[i-1] + f[i-2];
+        for (int i = 3; i <= target; i++) {
+            f[i] = f[i - 1] + f[i - 2];
         }
         return f[target];
     }
 }
 
+// 题目：二进制中1的个数
+// 思路1：用1，不断左移和n的每位进行位与，来判断1的个数
+class Solution11 {
+    public int NumberOf1(int n) {
+        int count = 0;
+        int flag = 1;
+        while (flag != 0) {
+            if ((n & flag) != 0) {
+                count++;
+            }
+            flag = flag << 1;
+        }
+        return count;
+    }
+}
+
+// 题目：二进制中1的个数
+// 思路2：如1100&1011=1000.也就是说，把一个整数减去1，再和原整数做与运算，会把该整数最右边一个1变成0.
+class Solution11_1 {
+    public int NumberOf1(int n) {
+        int count = 0;
+        while (n != 0) {
+            count++;
+            n = n & (n - 1);
+        }
+        return count;
+    }
+}
+
+// 题目：数值的整数次方
+// 思路：快速幂算法，
+class Solution12 {
+    public double Power(double base, int exponent) {
+        if (base == 0) return 0;
+        if (base == 1 || exponent == 0) return 1;
+
+        int absExponent = Math.abs(exponent);
+        double result = 1;
+        while (absExponent > 0) {
+//            if (absExponent % 2 == 0) {
+//                //如果指数为偶数
+//                absExponent /= 2; //把指数缩小为一半
+//                base *= base; //底数变大成原来的平方
+//            } else {
+//                //如果指数为奇数
+//                absExponent -= 1; //把指数减去1，使其变成一个偶数
+//                result *= base; //此时记得要把指数为奇数时分离出来的底数的一次方收集好
+//                absExponent /= 2; //此时指数为偶数，可以继续执行操作
+//                base *= base;
+//            }
+            // 下面是优化，优化if-else条件，以及使用位运算
+            if ((absExponent & 1) == 1) {
+                absExponent -= 1;
+                result *= base;
+            }
+            absExponent >>= 1;
+            base *= base;
+        }
+
+        return exponent > 0 ? result : 1 / result;
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
-
+        Solution12 s = new Solution12();
+        System.out.println(s.Power(2, 5));
     }
 }
