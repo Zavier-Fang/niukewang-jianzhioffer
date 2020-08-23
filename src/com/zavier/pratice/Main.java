@@ -7,6 +7,7 @@ package com.zavier.pratice;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 //题目：二维数组中的查找
@@ -305,6 +306,84 @@ class Solution12 {
         }
 
         return exponent > 0 ? result : 1 / result;
+    }
+}
+
+// 题目：调整数组顺序使奇数位于偶数前面
+class Solution13 {
+    public void reOrderArray(int[] array) {
+        if (array.length == 0) return;
+
+        List<Integer> odd = new ArrayList<>();
+        List<Integer> even = new ArrayList<>();
+        for (int ele :
+                array) {
+            if ((ele & 1) == 1) {
+                odd.add(ele);
+            } else {
+                even.add(ele);
+            }
+        }
+        int index = 0;
+        for (Integer integer : odd) {
+            array[index++] = integer;
+        }
+        for (Integer integer : even) {
+            array[index++] = integer;
+        }
+    }
+}
+
+// 题目：链表中倒数第k个结点
+class Solution14 {
+    public ListNode FindKthToTail(ListNode head, int k) {
+        ListNode fast, slow;
+        int i = 0;
+        fast = slow = head;
+        for (; fast != null; i++) {
+            if (i >= k) {
+                slow = slow.next;
+            }
+            fast = fast.next;
+        }
+        return i < k ? null : slow;
+    }
+}
+
+// 题目：反转链表
+// 思路：递归
+class Solution15 {
+    public ListNode ReverseList(ListNode head) {
+        if (head == null) return null;
+
+        ListNode next = head.next;
+        if (head.next == null) {
+            return head;
+        }
+        ListNode result = ReverseList(head.next);
+        next.next = head;
+        head.next = null;
+        return result;
+    }
+}
+
+// 题目：反转链表
+// 思路：迭代,主要的思想是用两个指针，其中newHead指向的是反转成功的链表的头部，currentHead指向的是还没有反转的链表的头部，
+// 初始状态是newHead指向null，currentHead指向的是第一个元素，一直往后遍历直到newHead指向最后一个元素为止.
+class Solution15_2 {
+    public ListNode ReverseList(ListNode head) {
+        if (head==null || head.next == null) return head;
+
+        ListNode newHead = null;
+        ListNode currentHead = head;
+        while (currentHead != null) {
+            ListNode next = currentHead.next;
+            currentHead.next = newHead;
+            newHead = currentHead;
+            currentHead = next;
+        }
+
+        return newHead;
     }
 }
 
