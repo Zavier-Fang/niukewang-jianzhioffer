@@ -372,7 +372,7 @@ class Solution15 {
 // 初始状态是newHead指向null，currentHead指向的是第一个元素，一直往后遍历直到newHead指向最后一个元素为止.
 class Solution15_2 {
     public ListNode ReverseList(ListNode head) {
-        if (head==null || head.next == null) return head;
+        if (head == null || head.next == null) return head;
 
         ListNode newHead = null;
         ListNode currentHead = head;
@@ -384,6 +384,57 @@ class Solution15_2 {
         }
 
         return newHead;
+    }
+}
+
+// 题目：合并两个排序的链表
+// 思路1：迭代，每次取当前两个链表节点中最小的加入新的链表中
+class Solution16 {
+    public ListNode Merge(ListNode list1, ListNode list2) {
+        if (list1 == null) return list2;
+        if (list2 == null) return list1;
+
+        ListNode result = new ListNode(-1);
+        ListNode current = result;
+        while (list1 != null && list2 != null) {
+            if (list1.val <= list2.val) {
+                current.next = list1;
+                list1 = list1.next;
+                current = current.next;
+            } else {
+                current.next = list2;
+                list2 = list2.next;
+                current = current.next;
+            }
+        }
+        if (list1 != null) {
+            current.next = list1;
+        }
+        if (list2 != null) {
+            current.next = list2;
+        }
+
+        return result.next;
+    }
+}
+
+// 题目：合并两个排序的链表
+// 思路2：递归，同归并排序
+class Solution16_1 {
+    public ListNode Merge(ListNode list1, ListNode list2) {
+        if (list1 == null) return list2;
+        if (list2 == null) return list1;
+
+        ListNode result = null;
+        if (list1.val <= list2.val){
+            result = list1;
+            result.next = Merge(list1.next, list2);
+        } else {
+            result = list2;
+            result.next = Merge(list1, list2.next);
+        }
+
+        return result;
     }
 }
 
