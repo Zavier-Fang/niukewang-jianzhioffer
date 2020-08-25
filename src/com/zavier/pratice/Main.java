@@ -439,6 +439,7 @@ class Solution16_1 {
 }
 
 // 题目：树的子结构
+// 思路：遍历树root1，如果节点与roo2相等，则判断是否有相同的子结构
 class Solution17 {
     public boolean HasSubtree(TreeNode root1, TreeNode root2) {
         if (root1 == null || root2 == null) {
