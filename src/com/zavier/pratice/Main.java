@@ -426,7 +426,7 @@ class Solution16_1 {
         if (list2 == null) return list1;
 
         ListNode result = null;
-        if (list1.val <= list2.val){
+        if (list1.val <= list2.val) {
             result = list1;
             result.next = Merge(list1.next, list2);
         } else {
@@ -435,6 +435,29 @@ class Solution16_1 {
         }
 
         return result;
+    }
+}
+
+// 题目：树的子结构
+class Solution17 {
+    public boolean HasSubtree(TreeNode root1, TreeNode root2) {
+        if (root1 == null || root2 == null) {
+            return false;
+        }
+        if (root1.val == root2.val) {
+            if (checkSubTree(root1, root2)) {
+                return true;
+            }
+        }
+        return HasSubtree(root1.left, root2) || HasSubtree(root1.right, root2);
+    }
+
+    boolean checkSubTree(TreeNode n1, TreeNode n2) {
+        if (n2 == null) return true;
+        if (n1 == null) return false;
+        if (n1.val != n2.val) return false;
+
+        return checkSubTree(n1.left, n2.left) && checkSubTree(n1.right, n2.right);
     }
 }
 
