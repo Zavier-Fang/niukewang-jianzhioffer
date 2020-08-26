@@ -5,10 +5,7 @@ package com.zavier.pratice;
  */
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 //题目：二维数组中的查找
 //思路：从左下角开始找
@@ -462,9 +459,160 @@ class Solution17 {
     }
 }
 
+// 题目：二叉树镜像
+class Solution18 {
+    public void Mirror(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeNode left = root.left;
+        root.left = root.right;
+        root.right = left;
+        Mirror(root.left);
+        Mirror(root.right);
+    }
+}
+
+// 题目：顺时针打印矩阵
+// 思路：逆时针旋转矩阵，每次输出第一行，然后去掉第一行
+class Solution19 {
+    public ArrayList<Integer> printMatrix(int[][] matrix) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return result;
+        }
+
+        int[][] currentMatrix = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                currentMatrix[i][j] = matrix[i][j];
+            }
+        }
+
+        for (; ; ) {
+            for (int i = 0; i < currentMatrix[0].length; i++) {
+                result.add(currentMatrix[0][i]);
+            }
+            if (result.size() == matrix.length * matrix[0].length) {
+                break;
+            }
+
+            currentMatrix = rotateMatrix(currentMatrix, 1);
+        }
+
+        return result;
+    }
+
+    public int[][] rotateMatrix(int[][] matrix, int startIndex) {
+        int[][] result = new int[matrix[startIndex].length][matrix.length - startIndex];
+        for (int i = 0; i < matrix[startIndex].length; i++) {
+            for (int j = 0; j < matrix.length - startIndex; j++) {
+                result[i][j] = matrix[j + startIndex][matrix[startIndex].length - 1 - i];
+            }
+        }
+        return result;
+    }
+}
+
+//题目：包含min函数的栈
+class Solution20 {
+    Stack<Integer> s = new Stack<>();
+    Stack<Integer> minStack = new Stack<>();
+
+    public void push(int node) {
+        s.push(node);
+        if (minStack.empty() || node <= minStack.peek()) {
+            minStack.push(node);
+        }
+    }
+
+    public void pop() {
+        if (s.empty() || minStack.empty()) return;
+
+        if (minStack.peek().equals(s.peek())) {
+            minStack.pop();
+        }
+        s.pop();
+    }
+
+    public int top() {
+        return s.peek();
+    }
+
+    public int min() {
+        return minStack.peek();
+    }
+}
+
+// 题目：栈的压入、弹出序列
+// 思路1：根据出栈队列，模拟入栈和出栈过程
+class Solution21 {
+    public boolean IsPopOrder(int[] pushA, int[] popA) {
+        if (pushA.length == 0 || popA.length == 0) return false;
+
+        Stack<Integer> s = new Stack<>();
+        int pushIndex = 0;
+        for (int i = 0; i < popA.length; i++) {
+            while (s.empty() || s.peek() != popA[i]) {
+                if (pushIndex >= pushA.length) {
+                    break;
+                }
+                s.push(pushA[pushIndex++]);
+            }
+            if (s.peek() == popA[i]) {
+                s.pop();
+            } else if (pushIndex >= pushA.length) {
+                break;
+            }
+        }
+        return s.empty();
+    }
+}
+
+// 题目：栈的压入、弹出序列
+// 思路2：根据出栈队列，模拟出栈，要注意连续出栈的情况（while）
+class Solution21_1 {
+    public boolean IsPopOrder(int[] pushA, int[] popA) {
+        if (pushA.length == 0 || popA.length == 0) return false;
+
+        Stack<Integer> s = new Stack<>();
+        int popIndex = 0;
+        for (int i :
+                pushA) {
+            s.push(i);
+            while (!s.empty() && s.peek() == popA[popIndex]) {
+                s.pop();
+                popIndex++;
+                if (popIndex >= popA.length) break;
+            }
+        }
+        return s.empty();
+    }
+}
+
+// 题目：从上往下打印二叉树
+class Solution22 {
+    public ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if(root == null) return result;
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while(!queue.isEmpty()){
+            TreeNode currentNode = queue.poll();
+            result.add(currentNode.val);
+            if(currentNode.left!=null) queue.offer(currentNode.left);
+            if(currentNode.right!=null) queue.offer(currentNode.right);
+        }
+        return result;
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
-        Solution12 s = new Solution12();
-        System.out.println(s.Power(2, 5));
+        Solution21_1 s = new Solution21_1();
+        int[] push = new int[]{1, 2, 3, 4, 5};
+        int[] pop = new int[]{4, 5, 3, 2, 1};
+        System.out.println(s.IsPopOrder(push, pop));
     }
 }
