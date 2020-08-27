@@ -714,6 +714,43 @@ class Solution25 {
 
 }
 
+// 题目：二叉搜索树与双向链表
+/*
+1 思路：明确Convert函数的功能。
+  输入：输入一个二叉搜索树的根节点。
+  过程：将其转化为一个有序的双向链表。
+  输出：返回该链表的头节点。
+
+2 明确成员变量pLast的功能。
+ pLast用于记录当前链表的末尾节点。
+
+3 明确递归过程。
+  递归的过程就相当于按照中序遍历，将整个树分解成了无数的小树，
+  然后将他们分别转化成了一小段一小段的双向链表。再利用pLast记录总的链表的末尾，然后将这些小段链表一个接一个地加到末尾。
+ */
+class Solution26 {
+    TreeNode pLast = null;
+    public TreeNode Convert(TreeNode pRootOfTree) {
+        if(pRootOfTree == null) return null;
+        TreeNode head  = Convert(pRootOfTree.left);
+
+        if (head == null) {
+            head = pRootOfTree;
+        }
+
+        pRootOfTree.left = pLast;
+        if (pLast != null) {
+            pLast.right = pRootOfTree;
+        }
+        pLast = pRootOfTree;
+
+        Convert(pRootOfTree.right);
+
+        return head;
+    }
+}
+
+
 public class Main {
     public static void main(String[] args) {
         Solution21_1 s = new Solution21_1();
