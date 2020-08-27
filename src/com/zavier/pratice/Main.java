@@ -594,18 +594,124 @@ class Solution21_1 {
 class Solution22 {
     public ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
         ArrayList<Integer> result = new ArrayList<>();
-        if(root == null) return result;
+        if (root == null) return result;
 
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             TreeNode currentNode = queue.poll();
             result.add(currentNode.val);
-            if(currentNode.left!=null) queue.offer(currentNode.left);
-            if(currentNode.right!=null) queue.offer(currentNode.right);
+            if (currentNode.left != null) queue.offer(currentNode.left);
+            if (currentNode.right != null) queue.offer(currentNode.right);
         }
         return result;
     }
+}
+
+// 题目：二叉搜索树的后序遍历
+// 思路：二叉搜索树特点：根节点大于左子树的所有节点，小于左子树的所有节点，后序遍历最后一个元素为根节点
+class Solution23 {
+    public boolean VerifySquenceOfBST(int[] sequence) {
+        int size = sequence.length;
+        if (size == 0) {
+            return false;
+        }
+        if (size == 1) {
+            return true;
+        }
+
+        int mid = sequence[size - 1];
+        int left = -1, right = size - 1;
+        for (int i = 0; i < size; i++) {
+            if (sequence[i] < mid) {
+                left = i;
+            } else {
+                break;
+            }
+        }
+        for (int i = size - 2; i >= 0; i--) {
+            if (sequence[i] > mid) {
+                right = i;
+            } else {
+                break;
+            }
+        }
+        if (left >= right || Math.abs((right - left)) > 1) {
+            return false;
+        }
+        boolean result = true;
+        if (left != -1) {
+            result &= VerifySquenceOfBST(Arrays.copyOfRange(sequence, 0, left + 1));
+            if (!result) {
+                return false;
+            }
+        }
+
+        if (right != size - 1) {
+            result &= VerifySquenceOfBST(Arrays.copyOfRange(sequence, right, size - 1));
+        }
+        return result;
+    }
+}
+
+// 题目：二叉树中和为某一值的路径
+class Solution24 {
+    ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+    ArrayList<Integer> resultItem = new ArrayList<>();
+
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int target) {
+        findPathRecursive(root, target);
+        return result;
+    }
+
+    void findPathRecursive(TreeNode root, int target) {
+        if (root == null || target - root.val < 0) {
+            return;
+        }
+
+        resultItem.add(root.val);
+        if (root.left == null && root.right == null && target - root.val == 0) {
+            result.add(new ArrayList<>(resultItem));
+        }
+
+        if (target - root.val > 0) {
+            findPathRecursive(root.left, target - root.val);
+            findPathRecursive(root.right, target - root.val);
+        }
+        resultItem.remove(resultItem.size() - 1);
+    }
+}
+
+class RandomListNode {
+    int label;
+    RandomListNode next = null;
+    RandomListNode random = null;
+
+    RandomListNode(int label) {
+        this.label = label;
+    }
+}
+
+// 题目：复杂链表的复制
+// 思路：利用哈希表保存每个clone的副本
+class Solution25 {
+    public RandomListNode Clone(RandomListNode pHead) {
+        if (pHead == null) return null;
+        HashMap<RandomListNode, RandomListNode> map = new HashMap<>();
+        RandomListNode current = pHead;
+        while (current != null) {
+            map.put(current, new RandomListNode(current.label));
+            current = current.next;
+        }
+        current = pHead;
+        while (current != null) {
+            map.get(current).next = map.get(current.next);
+            map.get(current).random = map.get(current.random);
+            current = current.next;
+        }
+        return map.get(pHead);
+    }
+
 }
 
 public class Main {
