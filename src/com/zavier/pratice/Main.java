@@ -730,9 +730,10 @@ class Solution25 {
  */
 class Solution26 {
     TreeNode pLast = null;
+
     public TreeNode Convert(TreeNode pRootOfTree) {
-        if(pRootOfTree == null) return null;
-        TreeNode head  = Convert(pRootOfTree.left);
+        if (pRootOfTree == null) return null;
+        TreeNode head = Convert(pRootOfTree.left);
 
         if (head == null) {
             head = pRootOfTree;
@@ -747,6 +748,108 @@ class Solution26 {
         Convert(pRootOfTree.right);
 
         return head;
+    }
+}
+
+// 题目：字符串的排列
+// 思路：递归法，问题转换为先固定第一个字符，求剩余字符的排列；求剩余字符排列时跟原问题一样。
+//
+//(1) 遍历出所有可能出现在第一个位置的字符（即：依次将第一个字符同后面所有字符交换）；
+//
+//(2) 固定第一个字符，求后面字符的排列（即：在第1步的遍历过程中，插入递归进行实现）。
+class Solution27 {
+    private ArrayList<String> result = new ArrayList<>();
+
+    public ArrayList<String> Permutation(String str) {
+        if (str == null || str.length() == 0) {
+            return result;
+        }
+
+        findPermutation(str.toCharArray(), 0);
+        Collections.sort(result);
+
+        return result;
+    }
+
+    void findPermutation(char[] str, int begin) {
+        if (begin == str.length - 1) {
+            String S = String.valueOf(str);
+            if (!result.contains(S)) {
+                result.add(S);
+            }
+            return;
+        }
+        for (int i = begin; i < str.length; i++) {
+            swap(str, begin, i);
+            findPermutation(str, begin + 1);
+            swap(str, begin, i);
+        }
+    }
+
+    void swap(char[] str, int i, int j) {
+        char temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+    }
+}
+
+// 题目：数组中出现次数超过一半的数字
+class Solution28 {
+    public int MoreThanHalfNum_Solution(int[] array) {
+        Map<Integer, Integer> m = new HashMap<>();
+        for (int ele : array) {
+            int count = m.getOrDefault(ele, 0);
+            m.put(ele, count + 1);
+            if (count + 1 > array.length / 2) {
+                return ele;
+            }
+        }
+        return 0;
+    }
+}
+
+// 题目：最小的k个数
+// 思路：优先队列解决（最大堆）
+class Solution29 {
+    public ArrayList<Integer> GetLeastNumbers_Solution(int[] input, int k) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (input.length < k || k == 0) {
+            return result;
+        }
+        PriorityQueue<Integer> queue = new PriorityQueue<>(k, (Integer o1, Integer o2) -> o2 - o1);
+        for (int i = 0; i < k; i++) {
+            queue.add(input[i]);
+        }
+        for (int i = k; i < input.length; i++) {
+            if (input[i] < queue.peek()) {
+                queue.add(input[i]);
+                queue.poll();
+            }
+        }
+        while (!queue.isEmpty()) {
+            result.add(queue.poll());
+        }
+
+        return result;
+    }
+}
+
+// 题目：连续子数组最大和
+// 思路：假设f(n)为以n结尾的最大的子数组的和，则有f(n) = max(f(n-1)+array[n], array[n])
+class Solution30 {
+    public int FindGreatestSumOfSubArray(int[] array) {
+        int[] f = new int[array.length];
+        if (array.length == 1) {
+            return array[0];
+        }
+
+        f[0] = array[0];
+        int ret = f[0];
+        for (int i = 1; i < array.length; i++) {
+            f[i] = Math.max(f[i - 1] + array[i], array[i]);
+            ret = Math.max(ret, f[i]);
+        }
+        return ret;
     }
 }
 
