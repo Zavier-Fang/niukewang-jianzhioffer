@@ -853,6 +853,21 @@ class Solution30 {
     }
 }
 
+class Solution31 {
+    public String PrintMinNumber(int[] numbers) {
+        String[] s = new String[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            s[i] = String.valueOf(numbers[i]);
+        }
+        Arrays.sort(s, (String s1, String s2) -> (s1 + s2).compareTo(s2 + s1));
+        StringBuilder sb = new StringBuilder();
+        for (String str:
+             s) {
+            sb.append(str);
+        }
+        return sb.toString();
+    }
+}
 
 public class Main {
     public static void main(String[] args) {
