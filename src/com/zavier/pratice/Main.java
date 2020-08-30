@@ -853,7 +853,16 @@ class Solution30 {
     }
 }
 
-class Solution31 {
+// 题目：把数组排成最小的数
+// 思路：
+//   先将整型数组转换成String数组，然后将String数组排序，最后将排好序的字符串数组拼接出来。关键就是制定排序规则。
+//   排序规则如下：
+//   若ab > ba 则 a > b，
+//   若ab < ba 则 a < b，
+//   若ab = ba 则 a = b；
+//   解释说明：
+//   比如 "3" < "31"但是 "331" > "313"，所以要将二者拼接起来进行比较
+class Solution32 {
     public String PrintMinNumber(int[] numbers) {
         String[] s = new String[numbers.length];
         for (int i = 0; i < numbers.length; i++) {
@@ -861,11 +870,32 @@ class Solution31 {
         }
         Arrays.sort(s, (String s1, String s2) -> (s1 + s2).compareTo(s2 + s1));
         StringBuilder sb = new StringBuilder();
-        for (String str:
-             s) {
+        for (String str :
+                s) {
             sb.append(str);
         }
         return sb.toString();
+    }
+}
+
+// 题目：丑数
+// 思路：要注意，后面的丑数是有前一个丑数乘以2，3，5中的一个得来。因此可以用动态规划去解
+// 同时注意一下，题目意思应该是质数因此，而不是因子，因为8的因子有1，2，4，8
+class Solution33 {
+    public int GetUglyNumber_Solution(int index) {
+        if (index < 1) return 0;
+        int[] result = new int[index];
+        result[0] = 1;
+
+        int t1 = 0, t2 = 0, t3 = 0;
+        for (int i = 1; i < index; i++) {
+            result[i] = Math.min(Math.min(result[t1]*2, result[t2]*3), result[t3]*5);
+            if (result[i] == result[t1] * 2) t1++;
+            if (result[i] == result[t2] * 3) t2++;
+            if (result[i] == result[t3] * 5) t3++;
+        }
+
+        return result[index-1];
     }
 }
 
