@@ -5,6 +5,8 @@ package com.zavier.pratice;
  */
 
 
+import sun.awt.image.ImageWatched;
+
 import java.util.*;
 
 //题目：二维数组中的查找
@@ -889,13 +891,86 @@ class Solution33 {
 
         int t1 = 0, t2 = 0, t3 = 0;
         for (int i = 1; i < index; i++) {
-            result[i] = Math.min(Math.min(result[t1]*2, result[t2]*3), result[t3]*5);
+            result[i] = Math.min(Math.min(result[t1] * 2, result[t2] * 3), result[t3] * 5);
             if (result[i] == result[t1] * 2) t1++;
             if (result[i] == result[t2] * 3) t2++;
             if (result[i] == result[t3] * 5) t3++;
         }
 
-        return result[index-1];
+        return result[index - 1];
+    }
+}
+
+// 题目：第一次只出现一次的字符
+class Solution34 {
+    public int FirstNotRepeatingChar(String str) {
+        Map<Character, Integer> map = new LinkedHashMap<>();
+        for (int i = 0; i < str.length(); i++) {
+            char s = str.charAt(i);
+            int number = map.getOrDefault(s, 0);
+            map.put(s, number + 1);
+        }
+
+        Character result = null;
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == 1) {
+                result = entry.getKey();
+                break;
+            }
+        }
+        if (result == null) return -1;
+        else {
+            return str.indexOf(result);
+        }
+    }
+}
+
+// 题目：数组中的逆序对
+// 思路：分治的思想，归并排序的应用
+class Solution35 {
+    int cnt = 0;
+    public int InversePairs(int[] array) {
+
+        if (array.length != 0) {
+            divide(array, 0, array.length - 1);
+        }
+        return cnt;
+    }
+
+    // 分
+    void divide(int[] array, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+        int mid = (start + end) / 2;
+
+        divide(array, start, mid);
+        divide(array, mid + 1, end);
+
+        merge(array, start, mid, end);
+    }
+
+    // 治
+    void merge(int[] array, int start, int mid, int end) {
+        int[] temp = new int[end - start + 1];
+
+        int i = start, j = mid + 1, k = 0;
+        //下面就开始两两进行比较，若前面的数大于后面的数，就构成逆序对
+        while (i <= mid && j <= end) {
+            if (array[i] < array[j]) {
+                temp[k++] = array[i++];
+            } else {
+                temp[k++] = array[j++];
+                //a[i]>a[j]了，那么这一次，从a[i]开始到a[mid]必定都是大于这个a[j]的，因为此时分治的两边已经是各自有序了
+                cnt = (cnt + mid - i + 1) % 1000000007;
+            }
+        }
+        while (i <= mid) temp[k++] = array[i++];
+        while (j <= end) temp[k++] = array[j++];
+
+        for (int l = 0; l < k; l++) {
+            array[l + start] = temp[l];
+        }
     }
 }
 
