@@ -929,6 +929,7 @@ class Solution34 {
 // 思路：分治的思想，归并排序的应用
 class Solution35 {
     int cnt = 0;
+
     public int InversePairs(int[] array) {
 
         if (array.length != 0) {
@@ -971,6 +972,77 @@ class Solution35 {
         for (int l = 0; l < k; l++) {
             array[l + start] = temp[l];
         }
+    }
+}
+
+// 题目：两个链表的第一个公共节点
+/*思路：
+        假定 List1长度: a+n  List2 长度:b+n, 且 a<b
+        那么 p1 会先到链表尾部, 这时p2 走到 a+n位置,将p1换成List2头部
+        接着p2 再走b+n-(n+a) =b-a 步到链表尾部,这时p1也走到List2的b-a位置，还差a步就到可能的第一个公共节点。
+        将p2 换成 List1头部，p2走a步也到可能的第一个公共节点。如果恰好p1==p2,那么p1就是第一个公共节点。  或者p1和p2一起走n步到达列表尾部，二者没有公共节点，退出循环。 同理a>=b.
+        时间复杂度O(n+a+b)
+
+        其实就是两个链表相加（a+n+b+n),然后走a+b+n步即可。
+*/
+class Solution36 {
+    public ListNode FindFirstCommonNode(ListNode pHead1, ListNode pHead2) {
+        ListNode p1 = pHead1, p2 = pHead2;
+
+        while (p1 != p2) {
+            if (p1 != null) p1 = p1.next;
+            if (p2 != null) p2 = p2.next;
+            if (p1 != p2) {
+                if (p1 == null) p1 = pHead2;
+                if (p2 == null) p2 = pHead1;
+            }
+        }
+
+        return p1;
+    }
+}
+
+// 题目：数字在升序数组中出现的次数
+// 思路：二分查找，找到最后出现的k的下标和最先出现的k的下标
+class Solution37 {
+    public int GetNumberOfK(int[] array, int k) {
+        return getLastIndex(array, k) - getFirstIndex(array, k) + 1;
+    }
+
+    //获取k第一次出现的下标
+    int getFirstIndex(int[] array, int k) {
+        int start = 0, end = array.length - 1;
+
+        int mid = (start + end) / 2;
+
+        while (start <= end) {
+            if (array[mid] < k) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+            mid = (start + end) / 2;
+        }
+
+        return start;
+    }
+
+    //获取k最后出现的下标
+    int getLastIndex(int[] array, int k) {
+        int start = 0, end = array.length - 1;
+
+        int mid = (start + end) / 2;
+
+        while (start <= end) {
+            if (array[mid] <= k) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+            mid = (start + end) / 2;
+        }
+
+        return end;
     }
 }
 
