@@ -1194,6 +1194,61 @@ class Solution42 {
     }
 }
 
+// 题目：左循环字符串
+class Solution43 {
+    public String LeftRotateString(String str, int n) {
+        int length = str.length();
+        char[] chars = new char[length];
+        for (int i = 0; i < length; i++) {
+            int newIndex = (i - n + length) % length;
+            chars[newIndex] = str.charAt(i);
+        }
+        return String.valueOf(chars);
+    }
+}
+
+// 题目：翻转单词顺序列
+class Solution44 {
+    public String ReverseSentence(String str) {
+        String[] s = str.split(" ");
+        if (s.length == 0) return str;
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = s.length - 1; i >= 0; i--) {
+            sb.append(s[i]);
+            if (i != 0) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+}
+
+// 题目：扑克牌顺子
+class Solution45 {
+    public boolean isContinuous(int[] numbers) {
+        if (numbers.length==0) return false;
+        if (numbers.length==1) return true;
+
+        Arrays.sort(numbers);
+        int cntOf0 = 0;
+        for (int i = 0; i < numbers.length - 1; i++) {
+            if (numbers[i] == 0) {
+                cntOf0++;
+            } else {
+                int diff = numbers[i + 1] - numbers[i];
+                if (diff > 1) {
+                    if (cntOf0 >= (diff - 1)) cntOf0 -= (diff - 1);
+                    else return false;
+                } else if (diff<1){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
         Solution21_1 s = new Solution21_1();
