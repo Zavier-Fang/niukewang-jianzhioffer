@@ -1117,7 +1117,7 @@ class Solution40 {
         }
         int index = findFirst1Index(xorResult);
         for (int i = 0; i < array.length; i++) {
-            if((array[i]>>index&1)==0){
+            if ((array[i] >> index & 1) == 0) {
                 num1[0] ^= array[i];
             } else {
                 num2[0] ^= array[i];
@@ -1134,6 +1134,63 @@ class Solution40 {
             index++;
         }
         return index;
+    }
+}
+
+// 题目：和为s的连续正序列
+class Solution41 {
+    public ArrayList<ArrayList<Integer>> FindContinuousSequence(int sum) {
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        //两个起点，相当于动态窗口的两边，根据其窗口内的值的和来确定窗口的位置和大小
+        int pleft = 1, pright = 2;
+        while (pleft < pright && pright < sum) {
+            //由于是连续的，差为1的一个序列，那么求和公式是(a0+an)*n/2
+            int curSum = (pleft + pright) * (pright - pleft + 1) / 2;
+            // 值相等，放进结果集，然后左边界往右移动
+            if (curSum == sum) {
+                ArrayList<Integer> list = new ArrayList<>();
+                for (int i = pleft; i <= pright; i++) list.add(i);
+                result.add(list);
+                //如果当前窗口内的值之和小于sum，那么右边窗口右移一下
+            } else if (curSum < sum) {
+                pright++;
+                //如果当前窗口内的值之和大于sum，那么左边窗口右移一下
+            } else {
+                pleft++;
+            }
+        }
+        return result;
+    }
+}
+
+// 题目：和为s的两个数字
+/* 思路：
+    假设：若b>a,且存在，
+    a + b = s;
+    (a - m ) + (b + m) = s
+    则：(a - m )(b + m)=ab - (b-a)m - m*m < ab；说明外层的乘积更小
+    也就是说依然是左右夹逼法！！！只需要2个指针
+    1.left开头，right指向结尾
+    2.如果和小于sum，说明太小了，left右移寻找更大的数
+    3.如果和大于sum，说明太大了，right左移寻找更小的数
+    4.和相等，把left和right的数返回
+ */
+class Solution42 {
+    public ArrayList<Integer> FindNumbersWithSum(int[] array, int sum) {
+        ArrayList<Integer> result = new ArrayList<>();
+        int left = 0, right = array.length - 1;
+        while (left <= right) {
+            if (array[left] + array[right] == sum) {
+                result.add(array[left]);
+                result.add(array[right]);
+                break;
+            } else if (array[left] + array[right] > sum) {
+                right--;
+            } else {
+                left++;
+            }
+        }
+        return result;
     }
 }
 
