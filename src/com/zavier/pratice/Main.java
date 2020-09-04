@@ -1227,8 +1227,8 @@ class Solution44 {
 // 题目：扑克牌顺子
 class Solution45 {
     public boolean isContinuous(int[] numbers) {
-        if (numbers.length==0) return false;
-        if (numbers.length==1) return true;
+        if (numbers.length == 0) return false;
+        if (numbers.length == 1) return true;
 
         Arrays.sort(numbers);
         int cntOf0 = 0;
@@ -1240,7 +1240,7 @@ class Solution45 {
                 if (diff > 1) {
                     if (cntOf0 >= (diff - 1)) cntOf0 -= (diff - 1);
                     else return false;
-                } else if (diff<1){
+                } else if (diff < 1) {
                     return false;
                 }
             }
@@ -1249,11 +1249,120 @@ class Solution45 {
     }
 }
 
+// 题目：孩子们的游戏（圆圈中最后剩下的数）
+class Solution46 {
+    public int LastRemaining_Solution(int n, int m) {
+        int[] a = new int[n];
+        for (int i = 0; i < n; i++) a[i] = i;
+        int cnt = 0;
+        int start = 0;
+        while (cnt < n - 1) {
+            int j = 0;
+            for (int i = 0; j < m; i++) {
+                int index = (start + i) % n;
+                if (a[index] < 0) continue;
+                if (j == m - 1) {
+                    a[index] = -1;
+                    start = (index + 1) % n;
+                    cnt++;
+                    break;
+                }
+
+                if (a[index] >= 0) j++;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (a[i] >= 0) return i;
+        }
+        return -1;
+    }
+}
+
+// 题目：求1+2+3+……n的和,要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+class Solution47 {
+    public int Sum_Solution(int n) {
+        if (n == 0) return 0;
+        int sum = n;
+        return sum + (Sum_Solution(n - 1));
+    }
+}
+
+// 题目：不用加减乘除做加法
+/* 思路：
+    相加各位 + 计算进位
+    十进制思想
+    5+7 各位相加：2 进位：10
+    2+10 12 0
+    12+0
+    二进制计算过程
+    5+7 各位相加：101^111=010 进位：101&111=101 (<<1=1010)
+    2+10 各位相加：010^1010=1000 进位：010&1010=010 <<1=0100
+    8+4 1000^0100=1100 1000&0100=0
+    12+0
+ */
+class Solution48 {
+    public int Add(int num1, int num2) {
+        if (num2 == 0) return num1;
+        return Add(num1 ^ num2, (num1 & num2) << 1);
+    }
+}
+
+// 题目：把字符串转换为整数
+class Solution49 {
+    public int StrToInt(String str) {
+        String trimStr = str.trim();
+        int len = trimStr.length();
+        if (len == 0) return 0;
+
+        int prefix = 1;
+        int result = 0;
+        for (int i = 0; i < len; i++) {
+            char ch = trimStr.charAt(i);
+            if (ch < '0' || ch > '9') {
+                if (i == 0 && ch == '+' || ch == '-') {
+                    if (ch == '-') prefix = -1;
+                } else {
+                    return 0;
+                }
+            } else {
+                int number = ch - '0';
+                result += number * (Math.pow(10, len - i - 1));
+            }
+        }
+        result *= prefix;
+        return result;
+    }
+}
+
+// 题目：数组中重复的数字
+class Solution50 {
+    // Parameters:
+    //    numbers:     an array of integers
+    //    length:      the length of array numbers
+    //    duplication: (Output) the duplicated number in the array number,length of duplication array is 1,so using duplication[0] = ? in implementation;
+    //                  Here duplication like pointor in C/C++, duplication[0] equal *duplication in C/C++
+    //    这里要特别注意~返回任意重复的一个，赋值duplication[0]
+    // Return value:       true if the input is valid, and there are some duplications in the array number
+    //                     otherwise false
+    public boolean duplicate(int numbers[], int length, int[] duplication) {
+        Map<Integer, Integer> map = new HashMap<>();
+        boolean flag = false;
+        for (int i = 0; i < length; i++) {
+            int cnt = map.getOrDefault(numbers[i], 0);
+            map.put(numbers[i], cnt + 1);
+            if (cnt + 1 > 1) {
+                duplication[0] = numbers[i];
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
-        Solution21_1 s = new Solution21_1();
-        int[] push = new int[]{1, 2, 3, 4, 5};
-        int[] pop = new int[]{4, 5, 3, 2, 1};
-        System.out.println(s.IsPopOrder(push, pop));
+        Solution49 s = new Solution49();
+        System.out.println(s.StrToInt("-123"));
     }
 }
