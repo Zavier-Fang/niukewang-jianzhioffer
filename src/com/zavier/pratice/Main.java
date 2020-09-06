@@ -1360,6 +1360,110 @@ class Solution50 {
     }
 }
 
+// 题目：构建乘积数组
+/* 思路：
+B[i]的值可以看作下图的矩阵中每行的乘积。
+
+下三角用连乘可以很容求得，上三角，从下向上也是连乘。
+
+因此我们的思路就很清晰了，先算下三角中的连乘，即我们先算出B[i]中的一部分，然后倒过来按上三角中的分布规律，把另一部分也乘进去。
+ */
+class Solution51 {
+    public int[] multiply(int[] A) {
+        int length = A.length;
+        int[] B = new int[length];
+        if (length != 0) {
+            B[0] = 1;
+            for (int i = 1; i < length; i++) {
+                B[i] = B[i - 1] * A[i - 1];
+            }
+            int temp = 1;
+            for (int j = length - 2; j >= 0; j--) {
+                temp *= A[j + 1];
+                B[j] *= temp;
+            }
+        }
+        return B;
+    }
+}
+
+// 题目：字符流中第一个不重复的字符
+class Solution54 {
+    LinkedHashMap<Character, Integer> map = new LinkedHashMap<>();
+
+    //Insert one char from stringstream
+    public void Insert(char ch) {
+        int cnt = map.getOrDefault(ch, 0);
+        map.put(ch, cnt + 1);
+    }
+
+    //return the first appearence once char in current stringstream
+    public char FirstAppearingOnce() {
+        for (Map.Entry<Character, Integer> entry : map.entrySet()
+        ) {
+            if (entry.getValue() == 1) {
+                return entry.getKey();
+            }
+        }
+        return '#';
+    }
+}
+
+// 题目：链表中环的入口节点
+// 思路1：利用map记录节点
+/* 思路2：
+1、设置快慢指针，假如有环，他们最后一定相遇。
+2、两个指针分别从链表头和相遇点继续出发，每次走一步，最后一定相遇与环入口。
+证明结论2：
+设：
+链表头到环入口长度为--a
+环入口到相遇点长度为--b
+相遇点到环入口长度为--c
+则：相遇时
+快指针路程=a+(b+c)k+b ，k>=1  其中b+c为环的长度，k为绕环的圈数（k>=1,即最少一圈，不能是0圈，不然和慢指针走的一样长，矛盾）。
+慢指针路程=a+b
+快指针走的路程是慢指针的两倍，所以：
+（a+b）*2=a+(b+c)k+b
+化简可得：
+a=(k-1)(b+c)+c 这个式子的意思是： 链表头到环入口的距离=相遇点到环入口的距离+（k-1）圈环长度。其中k>=1,所以k-1>=0圈。所以两个指针分别从链表头和相遇点出发，最后一定相遇于环入口。
+ */
+class Solution55 {
+
+    Map<ListNode, Integer> map = new HashMap<>();
+
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        while (pHead != null) {
+            int cnt = map.getOrDefault(pHead, 0);
+            if (cnt > 0) {
+                return pHead;
+            } else {
+                map.put(pHead, cnt + 1);
+                pHead = pHead.next;
+            }
+        }
+        return null;
+    }
+}
+
+// 题目：删除链表中重复的节点
+class Solution56 {
+    public ListNode deleteDuplication(ListNode pHead) {
+        if (pHead == null || pHead.next == null) return pHead; // 只有0个或1个结点，则返回
+
+        if (pHead.val == pHead.next.val) {  // 当前结点是重复结点
+            ListNode next = pHead.next;
+            // 跳过值与当前结点相同的全部结点,找到第一个与当前结点不同的结点
+            while(next != null && next.val == pHead.val) {
+                next = next.next;
+            }
+            return deleteDuplication(next); // 从第一个与当前结点不同的结点开始递归
+        } else {  // 当前结点不是重复结点
+            pHead.next = deleteDuplication(pHead.next); // 保留当前结点，从下一个结点开始递归
+            return pHead;
+        }
+    }
+}
+
 public class Main {
     public static void main(String[] args) {
         Solution49 s = new Solution49();
