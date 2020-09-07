@@ -1453,7 +1453,7 @@ class Solution56 {
         if (pHead.val == pHead.next.val) {  // 当前结点是重复结点
             ListNode next = pHead.next;
             // 跳过值与当前结点相同的全部结点,找到第一个与当前结点不同的结点
-            while(next != null && next.val == pHead.val) {
+            while (next != null && next.val == pHead.val) {
                 next = next.next;
             }
             return deleteDuplication(next); // 从第一个与当前结点不同的结点开始递归
@@ -1461,6 +1461,57 @@ class Solution56 {
             pHead.next = deleteDuplication(pHead.next); // 保留当前结点，从下一个结点开始递归
             return pHead;
         }
+    }
+}
+
+
+class TreeLinkNode {
+    int val;
+    TreeLinkNode left = null;
+    TreeLinkNode right = null;
+    TreeLinkNode next = null;
+
+    TreeLinkNode(int val) {
+        this.val = val;
+    }
+}
+
+// 题目：二叉树的下一个节点
+class Solution57 {
+    public TreeLinkNode GetNext(TreeLinkNode pNode) {
+        if (pNode == null) return null;
+        if (pNode.right != null) {    //如果有右子树，则找右子树的最左节点
+            TreeLinkNode node = pNode.right;
+            while (node.left != null) {
+                node = node.left;
+            }
+            return node;
+        }
+        while(pNode.next != null) {   //没右子树，则找第一个当前节点是父节点左孩子的节点
+            if (pNode.next.left == pNode) return pNode.next;
+            pNode = pNode.next;
+        }
+        return null;   //退到了根节点仍没找到，则返回null
+    }
+}
+
+// 题目：对称的二叉树
+/* 思路：
+1.只要pRoot.left和pRoot.right是否对称即可
+2.左右节点的值相等且对称子树left.left， right.right ;left.rigth,right.left也对称
+ */
+class Solution58 {
+    boolean isSymmetrical(TreeNode pRoot)
+    {
+        if(pRoot == null) return true;
+
+        return isSymmetrical(pRoot.left, pRoot.right);
+    }
+
+    boolean isSymmetrical(TreeNode left, TreeNode right) {
+        if (left==null&&right==null) return true;
+        if (left==null||right==null) return false;
+        return left.val == right.val && isSymmetrical(left.left, right.right) && isSymmetrical(left.right, right.left);
     }
 }
 
