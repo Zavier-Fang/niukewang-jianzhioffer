@@ -1609,6 +1609,70 @@ class Solution60 {
         }
         return result;
     }
+}
+
+// 题目：序列化二叉树
+// 思路：采用层次遍历保存字符串，每个节点以“，”结束，空节点以“#”表示
+class Solution61 {
+    String Serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        Queue<TreeNode> queue = new LinkedList<>();
+        if (root != null) queue.add(root);
+
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if (node != null) {
+                queue.offer(node.left);
+                queue.offer(node.right);
+                sb.append(node.val + ",");
+            } else {
+                sb.append("#,");
+            }
+        }
+        if (sb.length() != 0) sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
+    TreeNode Deserialize(String str) {
+        TreeNode head = null;
+        if (str == null || str.length() == 0) return head;
+
+        String[] nodes = str.split(",");
+        TreeNode[] treeNodes = new TreeNode[nodes.length];
+
+        for (int i = 0; i < nodes.length; i++) {
+            if (!nodes[i].equals("#")) {
+                treeNodes[i] = new TreeNode(Integer.parseInt(nodes[i]));
+            }
+        }
+
+        for (int i = 0, j = 1; j < treeNodes.length; i++) {
+            if (treeNodes[i] != null) {
+                treeNodes[i].left = treeNodes[j++];
+                treeNodes[i].right = treeNodes[j++];
+            }
+        }
+        return treeNodes[0];
+    }
+}
+
+// 题目：二叉搜索树的第k个节点
+class Solution62 {
+    LinkedList<TreeNode> transversal = new LinkedList<>();
+
+    TreeNode KthNode(TreeNode pRoot, int k) {
+        InOrderTransversal(pRoot);
+        if (k > transversal.size() || k < 1) return null;
+        return transversal.get(k - 1);
+    }
+
+    void InOrderTransversal(TreeNode pRoot) {
+        if (pRoot == null) return;
+
+        InOrderTransversal(pRoot.left);
+        transversal.add(pRoot);
+        InOrderTransversal(pRoot.right);
+    }
 
 }
 
