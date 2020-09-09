@@ -1487,7 +1487,7 @@ class Solution57 {
             }
             return node;
         }
-        while(pNode.next != null) {   //没右子树，则找第一个当前节点是父节点左孩子的节点
+        while (pNode.next != null) {   //没右子树，则找第一个当前节点是父节点左孩子的节点
             if (pNode.next.left == pNode) return pNode.next;
             pNode = pNode.next;
         }
@@ -1501,18 +1501,115 @@ class Solution57 {
 2.左右节点的值相等且对称子树left.left， right.right ;left.rigth,right.left也对称
  */
 class Solution58 {
-    boolean isSymmetrical(TreeNode pRoot)
-    {
-        if(pRoot == null) return true;
+    boolean isSymmetrical(TreeNode pRoot) {
+        if (pRoot == null) return true;
 
         return isSymmetrical(pRoot.left, pRoot.right);
     }
 
     boolean isSymmetrical(TreeNode left, TreeNode right) {
-        if (left==null&&right==null) return true;
-        if (left==null||right==null) return false;
+        if (left == null && right == null) return true;
+        if (left == null || right == null) return false;
         return left.val == right.val && isSymmetrical(left.left, right.right) && isSymmetrical(left.right, right.left);
     }
+}
+
+// 题目：按之字形顺序打印二叉树
+// 思路1：用队列实现，每次到偶数行reverse加入result
+class Solution59 {
+    public ArrayList<ArrayList<Integer>> Print(TreeNode pRoot) {
+
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        if (pRoot == null) return result;
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(pRoot);
+        boolean even = false;
+        while (!queue.isEmpty()) {
+            ArrayList<Integer> temp = new ArrayList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                temp.add(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            if (even) {
+                Collections.reverse(temp);
+            }
+            result.add(temp);
+            even = !even;
+        }
+        return result;
+    }
+
+}
+
+
+// 题目：按之字形顺序打印二叉树
+// 思路2: 用两个栈实现，奇数行一个栈，偶数行一个栈
+class Solution59_1 {
+    public ArrayList<ArrayList<Integer>> Print(TreeNode pRoot) {
+
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        if (pRoot == null) return result;
+
+        Stack<TreeNode> oddStack = new Stack<>();
+        Stack<TreeNode> evenStack = new Stack<>();
+
+        boolean isOdd = true;
+        oddStack.push(pRoot);
+        while (!oddStack.empty() || !evenStack.empty()) {
+            ArrayList<Integer> temp = new ArrayList<>();
+            if (isOdd) {
+                while (!oddStack.empty()) {
+                    TreeNode node = oddStack.pop();
+                    temp.add(node.val);
+                    if (node.left != null) evenStack.push(node.left);
+                    if (node.right != null) evenStack.push(node.right);
+                }
+            } else {
+                while (!evenStack.empty()) {
+                    TreeNode node = evenStack.pop();
+                    temp.add(node.val);
+                    if (node.right != null) oddStack.push(node.right);
+                    if (node.left != null) oddStack.push(node.left);
+                }
+            }
+            result.add(temp);
+            isOdd = !isOdd;
+        }
+        return result;
+    }
+
+}
+
+// 题目：把二叉树打印成多行
+class Solution60 {
+    ArrayList<ArrayList<Integer>> Print(TreeNode pRoot) {
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        if (pRoot == null) return result;
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(pRoot);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            ArrayList<Integer> temp = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode front = queue.poll();
+                temp.add(front.val);
+                if (front.left != null) queue.add(front.left);
+                if (front.right != null) queue.add(front.right);
+            }
+            result.add(temp);
+        }
+        return result;
+    }
+
 }
 
 public class Main {
