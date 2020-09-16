@@ -1676,9 +1676,173 @@ class Solution62 {
 
 }
 
+// 题目：数据流中的中位数
+// 思路1：每次插入后排序
+class Solution63 {
+
+    LinkedList<Integer> numbers = new LinkedList<>();
+
+    public void Insert(Integer num) {
+        numbers.add(num);
+        Collections.sort(numbers);
+    }
+
+    public Double GetMedian() {
+        int size = numbers.size();
+        if (size == 0) return (double) 0;
+        if (size == 1) return (double) numbers.get(0);
+        if (size % 2 == 0) {
+            double a = numbers.get(size / 2 - 1);
+            double b = numbers.get(size / 2);
+            return (a + b) / 2;
+        } else {
+            return (double) numbers.get(size / 2);
+        }
+    }
+
+}
+
+// 题目：数据流中的中位数
+// 思路2：用两个优先队列，一个最大堆，一个最小堆，保证最大堆里的元素都小于最小堆的元素，
+// 而且两个堆的大小之差在一之内，则通过两个堆顶可以取得中位数
+class Solution63_1 {
+
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    PriorityQueue<Integer> maxHeap = new PriorityQueue<>(15, (o1, o2) -> o2 - o1);
+
+    int count = 0;
+
+    public void Insert(Integer num) {
+        if ((count & 1) == 0) {
+            minHeap.offer(num);
+            Integer top = minHeap.poll();
+            maxHeap.offer(top);
+        } else {
+            maxHeap.offer(num);
+            Integer top = maxHeap.poll();
+            minHeap.offer(top);
+        }
+        count++;
+    }
+
+    public Double GetMedian() {
+        if ((count & 1) == 0) {
+            return (double) (minHeap.peek() + maxHeap.peek()) / 2;
+        } else {
+            return (double) maxHeap.peek();
+        }
+    }
+
+}
+
+// 题目：滑动窗口的最大值
+// 思路：大根堆模拟窗口，每次取堆顶元素
+class Solution64 {
+    public ArrayList<Integer> maxInWindows(int[] num, int size) {
+        ArrayList<Integer> result = new ArrayList<>();
+        if (size > num.length || size == 0) return result;
+
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(size, (o1, o2) -> o2 - o1);
+        for (int i = 0; i < size; i++) {
+            maxHeap.offer(num[i]);
+        }
+        result.add(maxHeap.peek());
+
+        int left = 0, right = size, length = num.length;
+        while (left < length && right < length) {
+            maxHeap.remove(num[left++]);
+            maxHeap.offer(num[right++]);
+            result.add(maxHeap.peek());
+        }
+
+        return result;
+    }
+}
+
+// 题目：矩阵中的路径
+/*
+思路：回溯法
+0.根据给定数组，初始化一个标志位数组，初始化为false，表示未走过，true表示已经走过，不能走第二次
+1.根据行数和列数，遍历数组，先找到一个与str字符串的第一个元素相匹配的矩阵元素，进入judge
+2.根据i和j先确定一维数组的位置，因为给定的matrix是一个一维数组
+3.确定递归终止条件：越界，当前找到的矩阵值不等于数组对应位置的值，已经走过的，这三类情况，都直接false，说明这条路不通
+4.若k，就是待判定的字符串str的索引已经判断到了最后一位，此时说明是匹配成功的
+5.下面就是本题的精髓，递归不断地寻找周围四个格子是否符合条件，只要有一个格子符合条件，就继续再找这个符合条件的格子的四周是否存在符合条件的格子，直到k到达末尾或者不满足递归条件就停止。
+6.走到这一步，说明本次是不成功的，我们要还原一下标志位数组index处的标志位，进入下一轮的判断。
+ */
+class Solution65 {
+    public boolean hasPath(char[] matrix, int rows, int cols, char[] str) {
+        boolean[] isVisited = new boolean[matrix.length];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (pathHelper(matrix, rows, cols, str, isVisited, i, j, 0)) return true;
+            }
+        }
+        return false;
+    }
+
+    boolean pathHelper(char[] matrix, int rows, int cols, char[] str, boolean[] isVisited, int i, int j, int k) {
+        int index = i * cols + j;
+        if (i < 0 || j < 0 || i >= rows || j >= cols || matrix[index] != str[k] || isVisited[index] == true) {
+            return false;
+        }
+        if (k == str.length - 1) return true;
+        isVisited[index] = true;
+        if (pathHelper(matrix, rows, cols, str, isVisited, i + 1, j, k + 1) ||
+                pathHelper(matrix, rows, cols, str, isVisited, i - 1, j, k + 1) ||
+                pathHelper(matrix, rows, cols, str, isVisited, i, j + 1, k + 1) ||
+                pathHelper(matrix, rows, cols, str, isVisited, i, j - 1, k + 1)) {
+            return true;
+        }
+        isVisited[index] = false;
+        return false;
+    }
+
+}
+
+// 题目：机器人的运动范围
+/*
+思路：回溯法
+1.从(0,0)开始走，每成功走一步标记当前位置为true,然后从当前位置往四个方向探索，
+返回1 + 4 个方向的探索值之和。
+
+2.探索时，判断当前节点是否可达的标准为：
+1）当前节点在矩阵内；
+2）当前节点未被访问过；
+3）当前节点满足limit限制。
+ */
+class Solution66 {
+    public int movingCount(int threshold, int rows, int cols) {
+        boolean[][] isVisited = new boolean[rows][cols];
+        return countHelper(threshold, rows, cols, isVisited, 0, 0);
+    }
+
+    int countHelper(int threshold, int rows, int cols, boolean[][] isVisited, int i, int j) {
+        if (i < 0 || j < 0 || i >= rows || j >= cols || isVisited[i][j] == true || (bitSum(i) + bitSum(j) > threshold)) {
+            return 0;
+        }
+        isVisited[i][j] = true;
+        return countHelper(threshold, rows, cols, isVisited, i - 1, j) +
+                countHelper(threshold, rows, cols, isVisited, i + 1, j) +
+                countHelper(threshold, rows, cols, isVisited, i, j - 1) +
+                countHelper(threshold, rows, cols, isVisited, i, j + 1) + 1;
+    }
+
+    int bitSum(int a) {
+        int ret = 0;
+        while (a != 0) {
+            ret += a % 10;
+            a /= 10;
+        }
+        return ret;
+    }
+}
+
+
 public class Main {
     public static void main(String[] args) {
-        Solution49 s = new Solution49();
-        System.out.println(s.StrToInt("-123"));
+        Solution64 s = new Solution64();
+        int[] num = new int[]{2, 3, 4, 2, 6, 2, 5, 1};
+        System.out.println(s.maxInWindows(num, 3));
     }
 }
