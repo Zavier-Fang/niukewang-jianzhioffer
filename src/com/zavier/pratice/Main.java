@@ -1838,6 +1838,51 @@ class Solution66 {
     }
 }
 
+// 题目：剪绳子
+/*
+     思路：动态规划
+     * 分类：最值型、划分型
+     * 考虑最后一步：
+     * 必然有一个点，把target分成两段，两段分别构成最小子问题。
+     * 两段的最大值的乘积，也是target所求的最大值。
+     * 设划分点为i,f[i]表示长度为i的绳子的乘积最大值。
+     *
+     * 转移方程：
+     * f[i] = MAX{f[j]*f[i-j]}|0<j<i
+     *
+     * 那么我们求的就是f[target]
+     *
+     * 初始值：
+     * f[0]=1
+     * f[1]=1
+     *
+     * 边界情况：
+     * 无
+     *
+     * 计算顺序:
+     * i从1到target
+     * j从1到i
+ */
+class Solution67 {
+    public int cutRope(int target) {
+        int[] f = new int[target + 1];
+        f[0] = 0;
+        f[1] = 1;
+
+        for (int i = 2; i <= target; i++) {
+            if (i == target) {
+                f[i] = 1;
+            } else {
+                f[i] = i;
+            }
+            for (int j=1;j<i;j++) {
+                f[i] = Math.max(f[j]*f[i-j], f[i]);
+            }
+        }
+        return f[target];
+    }
+}
+
 
 public class Main {
     public static void main(String[] args) {
